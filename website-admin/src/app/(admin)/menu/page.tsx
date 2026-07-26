@@ -165,8 +165,12 @@ export default function MenuManagementPage() {
     setSaving(true);
     setSaveError("");
     try {
+      const name = form.name.trim();
+      const priceNum = parseFloat(form.price);
+      if (!name) { setSaveError("Item name is required."); return; }
+      if (!Number.isFinite(priceNum) || priceNum < 0) { setSaveError("A valid price is required."); return; }
       const validVariants = variants.filter(v => v.label.trim() && v.price).map(v => ({ label: v.label.trim(), price: parseFloat(v.price) }));
-      const payload = { ...form, variants: validVariants };
+      const payload = { ...form, name, price: priceNum, variants: validVariants };
       if (editItem) {
         const res = await fetch(`/api/admin/menu/${editItem.id}`, {
           method: "PATCH",
@@ -308,13 +312,13 @@ export default function MenuManagementPage() {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
                   {item.variants.map(v => (
                     <span key={v.label} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 999, background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.25)", color: "#a5b4fc", fontWeight: 600 }}>
-                      {v.label} £{v.price.toFixed(2)}
+                      {v.label} £{Number(v.price ?? 0).toFixed(2)}
                     </span>
                   ))}
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontWeight: 800, fontSize: 18, color: "var(--a-orange-l)" }}>£{item.price.toFixed(2)}</div>
+                <div style={{ fontWeight: 800, fontSize: 18, color: "var(--a-orange-l)" }}>£{Number(item.price ?? 0).toFixed(2)}</div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
                   <div style={{ fontSize: 11, color: "var(--a-muted)", textTransform: "capitalize" }}>{item.category}</div>
                   <span style={{ fontSize: 9, padding: "2px 7px", borderRadius: 999, background: (item as any).availabilityType === "in-restaurant" ? "rgba(107,114,128,0.15)" : "rgba(16,185,129,0.12)", color: (item as any).availabilityType === "in-restaurant" ? "#9ca3af" : "#34d399", border: `1px solid ${(item as any).availabilityType === "in-restaurant" ? "rgba(107,114,128,0.25)" : "rgba(16,185,129,0.25)"}`, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>

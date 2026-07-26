@@ -40,18 +40,23 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { name, desc, price, category, emoji, veg, allergens, variants } = body;
 
+  const trimmedName = typeof name === "string" ? name.trim() : "";
+  const priceNum = typeof price === "number" ? price : parseFloat(price);
+  if (!trimmedName) return NextResponse.json({ error: "Item name is required" }, { status: 400 });
+  if (!Number.isFinite(priceNum) || priceNum < 0) return NextResponse.json({ error: "A valid price is required" }, { status: 400 });
+
   const cat = await prisma.menuCategory.findFirst({ where: { name: category } });
   if (!cat) return NextResponse.json({ error: "Category not found" }, { status: 400 });
 
-  const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const base = trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const id = `${base}-${Date.now()}`;
 
   const item = await prisma.menuItem.create({
     data: {
       id,
-      name,
+      name: trimmedName,
       description: desc,
-      price: parseFloat(price),
+      price: priceNum,
       categoryId: cat.id,
       emoji: emoji || "🍛",
       isVegetarian: veg === "veg",

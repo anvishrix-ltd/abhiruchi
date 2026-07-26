@@ -17,6 +17,10 @@ export async function GET() {
 
     // Filter by availabilityType if the field exists on the item
     const filtered = items.filter((item: any) => {
+      // Drop corrupt rows (empty name / invalid price) so one bad item can't break the menu
+      if (!(item.name ?? "").trim() || typeof item.price !== "number" || !Number.isFinite(item.price)) {
+        return false;
+      }
       if ("availabilityType" in item) {
         return item.availabilityType === "delivery" || item.availabilityType === "both";
       }

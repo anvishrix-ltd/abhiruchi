@@ -27,9 +27,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const body = await req.json();
 
     const data: any = {};
-    if (body.name !== undefined) data.name = body.name;
+    if (body.name !== undefined) {
+      const trimmedName = typeof body.name === "string" ? body.name.trim() : "";
+      if (!trimmedName) return NextResponse.json({ error: "Item name is required" }, { status: 400 });
+      data.name = trimmedName;
+    }
     if (body.desc !== undefined) data.description = body.desc;
-    if (body.price !== undefined) data.price = parseFloat(body.price);
+    if (body.price !== undefined) {
+      const priceNum = typeof body.price === "number" ? body.price : parseFloat(body.price);
+      if (!Number.isFinite(priceNum) || priceNum < 0) return NextResponse.json({ error: "A valid price is required" }, { status: 400 });
+      data.price = priceNum;
+    }
     if (body.emoji !== undefined) data.emoji = body.emoji;
     if (body.veg !== undefined) data.isVegetarian = body.veg === "veg";
     if (body.available !== undefined) data.isAvailable = body.available;
