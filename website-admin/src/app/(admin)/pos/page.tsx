@@ -147,7 +147,7 @@ export default function PosPage() {
                 <div style={{ fontSize: 30, marginBottom: 8 }}>{i.emoji}</div>
                 <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 4, lineHeight: 1.3 }}>{i.name}</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: 800, color: "var(--a-orange-l)", fontSize: 15 }}>£{i.price.toFixed(2)}</span>
+                  <span style={{ fontWeight: 800, color: "var(--a-orange-l)", fontSize: 15 }}>£{Number(i.price ?? 0).toFixed(2)}</span>
                   <span style={{ fontSize: 18, color: "var(--a-green)" }}>＋</span>
                 </div>
               </button>

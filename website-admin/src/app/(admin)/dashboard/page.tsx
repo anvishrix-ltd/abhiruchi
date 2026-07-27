@@ -141,7 +141,7 @@ export default function DashboardPage() {
             <div style={{ fontWeight: 700, fontSize: 15 }}>Recent Orders</div>
             <div style={{ fontSize: 12, color: "var(--a-muted)", marginTop: 2 }}>Live from database</div>
           </div>
-          <Link href="/admin/orders" className="a-filter-btn">View all orders</Link>
+          <Link href="/orders" className="a-filter-btn">View all orders</Link>
         </div>
         <div style={{ overflowX: "auto" }}>
           <table className="a-table">

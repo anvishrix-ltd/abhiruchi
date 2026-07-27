@@ -68,6 +68,20 @@ function verifyTotp(secret: string, token: string): boolean {
 }
 
 // ── Handlers ──────────────────────────────────────────────────────────────
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    if (searchParams.get("action") === "status") {
+      const account = await prisma.adminAccount.findFirst();
+      return NextResponse.json({ enabled: account?.totpEnabled ?? false });
+    }
+    return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
