@@ -49,6 +49,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await prisma.coupon.delete({ where: { id: parseInt(id) } });
-  return NextResponse.json({ ok: true });
+  const couponId = parseInt(id);
+  try {
+    // Redemptions reference the coupon, so they have to go first or the delete violates the FK
+    await prisma.$transaction([
+      prisma.couponRedemption.deleteMany({ where: { couponId } }),
+      prisma.coupon.delete({ where: { id: couponId } }),
+    ]);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+  }
 }
