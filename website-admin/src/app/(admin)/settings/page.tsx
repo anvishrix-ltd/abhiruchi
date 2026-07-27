@@ -30,6 +30,7 @@ const DEFAULT_HOURS: HoursMap = {
 type Form = {
   name: string; tagline: string; address: string; phone: string;
   email: string; minOrder: string; deliveryCharge: string; freeDeliveryThreshold: string;
+  vatNumber: string; vatRate: string; receiptFooter: string;
 };
 
 const DEFAULTS: Form = {
@@ -37,6 +38,7 @@ const DEFAULTS: Form = {
   address: "142 Ecclesall Road, Sheffield, S11 8JD", phone: "+44 114 267 8899",
   email: "hello@abhiruchi.co.uk", minOrder: "15", deliveryCharge: "2.99",
   freeDeliveryThreshold: "35",
+  vatNumber: "", vatRate: "0", receiptFooter: "Thank you for your order!",
 };
 
 export default function SettingsPage() {
@@ -341,12 +343,29 @@ export default function SettingsPage() {
             <div>
               <div style={{ fontWeight: 600, fontSize: 14 }}>Auto-print new orders</div>
               <div style={{ fontSize: 12, color: "var(--a-muted)", marginTop: 2 }}>
-                When enabled, a print dialog opens automatically when a new order arrives.
+                Prints a kitchen ticket automatically when a new order arrives. Requires the
+                Orders page to be open.
               </div>
             </div>
           </label>
           <div style={{ marginTop: 12, fontSize: 12, color: autoPrint ? "#34d399" : "var(--a-muted)" }}>
             {autoPrint ? "✓ Auto-print is ON" : "Auto-print is off"}
+          </div>
+
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", marginTop: 20, paddingTop: 20 }}>
+            <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>Printed receipt</div>
+            <div style={{ fontSize: 12, color: "var(--a-muted)", marginBottom: 16 }}>
+              The name, address and phone above are printed on every customer bill.
+              Leave VAT number blank if not VAT registered.
+            </div>
+            <div className="a-grid-2col" style={{ gap: 16 }}>
+              <Field label="VAT Number" value={form.vatNumber} onChange={set("vatNumber")} />
+              <Field label="VAT Rate (%)" type="number" value={form.vatRate} onChange={set("vatRate")} />
+              <Field label="Receipt Footer" value={form.receiptFooter} onChange={set("receiptFooter")} style={{ gridColumn: "span 2" }} />
+            </div>
+            <div style={{ fontSize: 12, color: "var(--a-muted)", marginTop: 12 }}>
+              Saved with “Save Changes” above. VAT is shown as included in the total, not added to it.
+            </div>
           </div>
         </div>
 

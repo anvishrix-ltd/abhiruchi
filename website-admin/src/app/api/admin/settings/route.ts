@@ -6,6 +6,7 @@ const KEYS = [
   "name", "tagline", "address", "phone", "email", "openingHours",
   "minOrder", "deliveryCharge", "freeDeliveryThreshold",
   "delivery_zones", "auto_print", "sms_alerts",
+  "vatNumber", "vatRate", "receiptFooter",
 ];
 
 export async function GET() {

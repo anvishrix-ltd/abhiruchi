@@ -2,13 +2,12 @@
 
 import { useState, useEffect, useMemo } from "react";
 import type { MenuItem } from "@/lib/types";
-import { printReceipt, type ReceiptData } from "@/lib/receipt";
+import { printReceipt, prefetchRestaurantDetails, type ReceiptData } from "@/lib/receipt";
 
 type OrderType = "dine-in" | "takeaway" | "delivery";
 type PayMethod = "cash" | "card";
 type CartLine = { id: string; name: string; emoji: string; price: number; qty: number };
 
-const VAT_RATE = 0; // VAT shown as informational only; prices are inclusive
 
 export default function PosPage() {
   const [items, setItems] = useState<MenuItem[]>([]);
@@ -31,6 +30,7 @@ export default function PosPage() {
       .then((data: MenuItem[]) => setItems(data.filter(i => i.available !== false)))
       .catch(() => {})
       .finally(() => setLoading(false));
+    prefetchRestaurantDetails();
   }, []);
 
   const categories = useMemo(() => {
@@ -48,7 +48,6 @@ export default function PosPage() {
   const subtotal = cart.reduce((s, l) => s + l.price * l.qty, 0);
   const discountNum = Math.min(Math.max(0, parseFloat(discount) || 0), subtotal);
   const total = Math.max(0, subtotal - discountNum);
-  const vat = +(total - total / (1 + VAT_RATE)).toFixed(2);
   const count = cart.reduce((s, l) => s + l.qty, 0);
 
   const add = (i: MenuItem) => {
@@ -92,7 +91,7 @@ export default function PosPage() {
           customerName: custName,
           placedAt: new Date().toISOString(),
         };
-        printReceipt(receipt);
+        await printReceipt(receipt);
       }
       showToast(`Order ${data.id} placed · £${data.total.toFixed(2)}`);
       clearCart();

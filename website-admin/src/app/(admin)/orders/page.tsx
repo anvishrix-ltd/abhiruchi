@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Fragment } from "react";
-import { printReceipt } from "@/lib/receipt";
+import { printReceipt, printHtml, getRestaurantDetails, prefetchRestaurantDetails } from "@/lib/receipt";
 
 type OrderStatus = string;
 
@@ -59,10 +59,9 @@ function playBeep() {
   } catch {}
 }
 
-function printKitchenTicket(order: AdminOrder) {
-  const win = window.open("", "_blank", "width=400,height=600");
-  if (!win) return;
-  win.document.write(`<!DOCTYPE html><html><head><title>Kitchen Ticket</title>
+async function kitchenTicketHtml(order: AdminOrder): Promise<string> {
+  const { name: restaurantName } = await getRestaurantDetails();
+  return `<!DOCTYPE html><html><head><title>Kitchen Ticket</title>
 <style>
   body { font-family: monospace; margin: 0; padding: 20px; background: #fff; color: #000; font-size: 14px; }
   h1 { font-size: 28px; margin: 0 0 4px 0; }
@@ -75,7 +74,7 @@ function printKitchenTicket(order: AdminOrder) {
   .total { font-size: 20px; font-weight: bold; text-align: right; margin-top: 8px; }
   .type-badge { display: inline-block; padding: 3px 10px; border: 2px solid #000; font-weight: bold; font-size: 13px; text-transform: uppercase; }
 </style></head><body>
-<div class="label">Kitchen Ticket</div>
+<div class="label">${restaurantName} · Kitchen Ticket</div>
 <h1>${order.id}</h1>
 <div class="divider"></div>
 <div class="label">Date &amp; Time</div>
@@ -99,13 +98,14 @@ ${order.items.split(", ").map(item => {
 ${order.specialInstructions ? `<div class="divider"></div><div class="label">Special Instructions</div><div class="value">${order.specialInstructions}</div>` : ""}
 <div class="divider"></div>
 <div class="total">Total: £${order.total.toFixed(2)}</div>
-</body></html>`);
-  win.document.close();
-  win.focus();
-  setTimeout(() => { win.print(); win.close(); }, 300);
+</body></html>`;
 }
 
-function printCustomerReceipt(order: AdminOrder) {
+async function printKitchenTicket(order: AdminOrder) {
+  await printHtml(await kitchenTicketHtml(order));
+}
+
+async function printCustomerReceipt(order: AdminOrder) {
   const items = order.lineItems && order.lineItems.length > 0
     ? order.lineItems
     : order.items.split(", ").map(s => {
@@ -113,7 +113,7 @@ function printCustomerReceipt(order: AdminOrder) {
         return { name: (m ? m[1] : s).replace(/^[^\w£]+/, "").trim(), qty: m ? parseInt(m[2]) : 1, price: 0 };
       });
   const subtotal = order.subtotal ?? order.total;
-  printReceipt({
+  await printReceipt({
     orderId: order.id,
     orderType: order.type,
     paymentMethod: order.paymentMethod ?? order.payment ?? "card",
@@ -184,9 +184,12 @@ export default function OrdersPage() {
         playBeep();
         newOrders.forEach(o => addToast(`🔔 New order received: ${o.id}`));
         setUnreadCount(prev => prev + newOrders.length);
-        // Auto-print: trigger window.print() if enabled in localStorage
+        // Auto-print a kitchen ticket per new order. Printing the page itself
+        // would send the whole admin UI to the printer.
         if (typeof window !== "undefined" && localStorage.getItem("admin_auto_print") === "true") {
-          window.print();
+          for (const o of newOrders) {
+            await printKitchenTicket(o).catch(() => {});
+          }
         }
       }
     }
@@ -201,6 +204,7 @@ export default function OrdersPage() {
   };
 
   useEffect(() => {
+    prefetchRestaurantDetails();
     // Seed localStorage auto_print from API if not already set
     fetch("/api/admin/settings").then(r => r.json()).then(d => {
       if (typeof window !== "undefined" && localStorage.getItem("admin_auto_print") === null && d.auto_print) {
