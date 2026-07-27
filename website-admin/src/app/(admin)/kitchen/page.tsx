@@ -45,7 +45,8 @@ export default function KitchenPage() {
   const [orders, setOrders] = useState<KDSOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [advancing, setAdvancing] = useState<Set<string>>(new Set());
-  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  // Stays null until the first client-side fetch — a server-rendered clock would not match on hydration
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [kdsStatuses, setKdsStatuses] = useState<KdsStatusEntry[]>(FALLBACK_KDS);
 
   const KDS_VALUES = kdsStatuses.map(s => s.value);
@@ -116,7 +117,8 @@ export default function KitchenPage() {
           <div>
             <div style={{ fontSize: 20, fontWeight: 700 }}>Kitchen Display</div>
             <div style={{ fontSize: 12, color: "var(--a-muted)" }}>
-              {orders.length} active order{orders.length !== 1 ? "s" : ""} · Last refreshed {lastRefresh.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+              {orders.length} active order{orders.length !== 1 ? "s" : ""}
+              {lastRefresh && ` · Last refreshed ${lastRefresh.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`}
             </div>
           </div>
         </div>

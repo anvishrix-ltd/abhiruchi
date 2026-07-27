@@ -41,11 +41,13 @@ export async function POST(req: Request) {
     const adjustedTotal = Math.max(0, total - loyaltyDiscount);
 
     // Server-side coupon restriction re-validation
+    let appliedCoupon: { id: number } | null = null;
     if (couponCode) {
       const coupon = await prisma.coupon.findFirst({
         where: { code: couponCode.toUpperCase(), isActive: true },
       });
       if (coupon) {
+        appliedCoupon = { id: coupon.id };
         const now = new Date();
         if ((coupon.startsAt && now < coupon.startsAt) || (coupon.expiresAt && now > coupon.expiresAt)) {
           return NextResponse.json({ error: "Coupon is no longer valid" }, { status: 400 });
@@ -132,11 +134,20 @@ export async function POST(req: Request) {
       },
     });
 
-    if (couponCode) {
-      await prisma.coupon.updateMany({
-        where: { code: couponCode.toUpperCase() },
-        data: { currentUses: { increment: 1 } },
-      });
+    if (appliedCoupon) {
+      // Order is already placed — never fail the request on bookkeeping
+      try {
+        await prisma.coupon.update({
+          where: { id: appliedCoupon.id },
+          data: { currentUses: { increment: 1 } },
+        });
+        // Redemption row is what per-user limits and coupon stats are counted from
+        await prisma.couponRedemption.create({
+          data: { couponId: appliedCoupon.id, orderId: order.id, discountApplied: discount },
+        });
+      } catch (e) {
+        console.error("[coupon redemption]", e);
+      }
     }
 
     const eta = Math.floor(35 + Math.random() * 10);

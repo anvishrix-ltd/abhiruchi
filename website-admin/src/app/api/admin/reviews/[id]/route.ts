@@ -2,12 +2,18 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Only these reach the public site: /api/reviews lists status === "published"
+const STATUSES = ["published", "pending"];
+
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const body = await req.json();
   try {
     const data: any = {};
     if (body.status !== undefined) {
+      if (!STATUSES.includes(body.status)) {
+        return NextResponse.json({ error: `status must be one of: ${STATUSES.join(", ")}` }, { status: 400 });
+      }
       data.status = body.status;
       if (body.status === "published") data.publishedAt = new Date();
     }
