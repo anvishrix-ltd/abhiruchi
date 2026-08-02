@@ -2,6 +2,26 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const DB_URL = process.env.DATABASE_URL ?? "postgresql://kalyan@localhost:5432/abhiruchulu";
+
+// This script deletes the whole menu, every order, and every customer before
+// reseeding demo data. Run against production — a stray `prisma db seed`, or a
+// `migrate reset` that triggers seeding — it destroys the live restaurant's
+// menu and order history. Refuse anything that is not obviously a local
+// database unless the caller has explicitly opted in.
+const isLocal = /@(localhost|127\.0\.0\.1|::1)[:/]/.test(DB_URL);
+if (!isLocal && process.env.ALLOW_DESTRUCTIVE_SEED !== "yes-wipe-this-database") {
+  const host = DB_URL.replace(/\/\/[^@]*@/, "//***@").split("?")[0];
+  console.error(
+    `\n✋ Refusing to seed a non-local database.\n\n` +
+    `   Target : ${host}\n\n` +
+    `   This wipes MenuItem, MenuCategory, Order, OrderItem, Customer,\n` +
+    `   Coupon, CouponRedemption, Review and InventoryItem.\n\n` +
+    `   If you genuinely mean to erase that database, re-run with:\n` +
+    `     ALLOW_DESTRUCTIVE_SEED=yes-wipe-this-database npm run seed\n`
+  );
+  process.exit(1);
+}
+
 const adapter = new PrismaPg({ connectionString: DB_URL });
 const db = new PrismaClient({ adapter } as any);
 

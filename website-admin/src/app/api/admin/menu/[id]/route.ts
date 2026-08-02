@@ -71,6 +71,26 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await prisma.menuItem.delete({ where: { id } });
-  return NextResponse.json({ ok: true });
+  try {
+    // Read first: once it's gone the name can't be recovered for the log entry
+    const item = await prisma.menuItem.findUnique({ where: { id }, select: { name: true, price: true } });
+    await prisma.menuItem.delete({ where: { id } });
+
+    // Deletions were previously unrecorded, so vanished dishes left no trace of
+    // whether anyone removed them from the admin.
+    try {
+      await prisma.adminActivityLog.create({
+        data: {
+          action: "menu_delete",
+          detail: `Menu item deleted: ${item?.name ?? id}${item ? ` (£${item.price})` : ""}`,
+          entityId: id,
+        },
+      });
+    } catch { /* non-fatal */ }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[menu DELETE]", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
 }
