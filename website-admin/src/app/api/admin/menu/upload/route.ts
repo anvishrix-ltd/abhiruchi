@@ -6,6 +6,22 @@ import { put, del } from "@vercel/blob";
 const ALLOWED = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const hasBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
 
+/**
+ * Deletes a previously stored image, given whatever was in MenuItem.image.
+ * Handles both blob URLs and local-dev paths, and tolerates the legacy
+ * ?v= stamp that older rows carry.
+ */
+async function removeStoredImage(stored: string) {
+  const withoutQuery = stored.split("?")[0];
+  if (withoutQuery.startsWith("http")) {
+    if (hasBlob) await del(withoutQuery);
+    return;
+  }
+  const { unlink } = await import("fs/promises");
+  const path = await import("path");
+  await unlink(path.join(process.cwd(), "public", withoutQuery.replace(/^\//, "")));
+}
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -20,32 +36,41 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(await file.arrayBuffer());
     let imageUrl: string;
 
-    // The stored path is deterministic, so replacing a photo reuses the same URL.
-    // Blob serves it with max-age=2592000, so browsers and the CDN would keep
-    // showing the old picture for 30 days. A version stamp makes each upload a
-    // distinct URL while still overwriting the single underlying file.
+    // Each upload goes to its own path. Reusing one path meant a replacement
+    // kept the old URL, and Blob serves those with max-age=2592000, so browsers
+    // and the CDN showed the previous photo for up to 30 days. A version query
+    // alone is not enough either: overwriting a path takes a moment to
+    // propagate, so a fetch in that window would cache the old bytes under the
+    // new URL. A path that has never been served cannot go stale.
     const version = Date.now();
+    const previous = await prisma.menuItem.findUnique({ where: { id }, select: { image: true } });
 
     if (hasBlob) {
       // Production / Vercel: persist to Blob storage (survives deploys, served over CDN)
-      const blob = await put(`menu-images/${id}.${ext}`, buffer, {
+      const blob = await put(`menu-images/${id}-${version}.${ext}`, buffer, {
         access: "public",
         contentType: file.type,
         addRandomSuffix: false,
         allowOverwrite: true,
       });
-      imageUrl = `${blob.url}?v=${version}`;
+      imageUrl = blob.url;
     } else {
       // Local dev fallback: write into the admin app's own public folder
       const { writeFile, mkdir } = await import("fs/promises");
       const path = await import("path");
       const dir = path.join(process.cwd(), "public", "menu-images");
       await mkdir(dir, { recursive: true });
-      await writeFile(path.join(dir, `${id}.${ext}`), buffer);
-      imageUrl = `/menu-images/${id}.${ext}?v=${version}`;
+      await writeFile(path.join(dir, `${id}-${version}.${ext}`), buffer);
+      imageUrl = `/menu-images/${id}-${version}.${ext}`;
     }
 
     await prisma.menuItem.update({ where: { id }, data: { image: imageUrl } });
+
+    // Drop the photo this one replaced, so old versions don't pile up in storage
+    if (previous?.image && previous.image !== imageUrl) {
+      await removeStoredImage(previous.image).catch(() => {});
+    }
+
     return NextResponse.json({ url: imageUrl });
   } catch (err) {
     console.error("[menu upload]", err);
@@ -63,16 +88,7 @@ export async function DELETE(req: Request) {
 
     // Best-effort cleanup of the stored file
     if (item?.image) {
-      if (hasBlob && item.image.startsWith("http")) {
-        // Strip the ?v= stamp — del() matches on the blob's own URL
-        await del(item.image.split("?")[0]).catch(() => {});
-      } else {
-        const { unlink } = await import("fs/promises");
-        const path = await import("path");
-        for (const ext of ["jpg", "png", "webp"]) {
-          await unlink(path.join(process.cwd(), "public", "menu-images", `${id}.${ext}`)).catch(() => {});
-        }
-      }
+      await removeStoredImage(item.image).catch(() => {});
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
