@@ -5,7 +5,7 @@ export const RESTAURANT: RestaurantConfig = {
   tagline: "Authentic South Indian Cuisine in the Heart of Sheffield",
   est: 2000,
   address: "15 Castle Street, Sheffield, S3 8LT",
-  phone: "+44 114 267 8899",
+  phone: "0114 453 7431",
   email: "hello@abhiruchi.co.uk",
   hours: [
     { day: "Mon – Thu", time: "12:00pm – 10:00pm" },

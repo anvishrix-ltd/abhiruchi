@@ -17,7 +17,7 @@ export async function GET() {
       tagline:              map["restaurant_tagline"]       ?? "Authentic South Indian Cuisine in the Heart of Sheffield",
       est:                  parseInt(map["restaurant_est"]  ?? "2000", 10),
       address:              map["restaurant_address"]       ?? "15 Castle Street, Sheffield, S3 8LT",
-      phone:                map["restaurant_phone"]         ?? "+44 114 267 8899",
+      phone:                map["restaurant_phone"]         ?? "0114 453 7431",
       email:                map["restaurant_email"]         ?? "hello@abhiruchi.co.uk",
       minOrder:             parseFloat(map["restaurant_min_order"]          ?? "15"),
       deliveryCharge:       parseFloat(map["restaurant_delivery_charge"]    ?? "2.99"),

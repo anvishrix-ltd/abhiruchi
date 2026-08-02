@@ -36,7 +36,7 @@ const FALLBACK: RestaurantDetails = {
   name: "Abhiruchulu",
   tagline: "Authentic South Indian Cuisine in the Heart of Sheffield",
   address: "15 Castle Street, Sheffield, S3 8LT",
-  phone: "+44 114 267 8899",
+  phone: "0114 453 7431",
   vatNumber: "",
   vatRate: 0,
   footer: "Thank you for your order!",

@@ -34,7 +34,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   tagline: "Authentic South Indian Cuisine in the Heart of Sheffield",
   est: 2000,
   address: "15 Castle Street, Sheffield, S3 8LT",
-  phone: "+44 114 267 8899",
+  phone: "0114 453 7431",
   email: "hello@abhiruchi.co.uk",
   minOrder: 15,
   deliveryCharge: 2.99,
