@@ -18,6 +18,7 @@ export async function GET() {
       est:                  parseInt(map["restaurant_est"]  ?? "2000", 10),
       address:              map["restaurant_address"]       ?? "15 Castle Street, Sheffield, S3 8LT",
       phone:                map["restaurant_phone"]         ?? "0114 453 7431",
+      whatsapp:             map["restaurant_whatsapp"]      ?? "",
       email:                map["restaurant_email"]         ?? "hello@abhiruchi.co.uk",
       minOrder:             parseFloat(map["restaurant_min_order"]          ?? "15"),
       deliveryCharge:       parseFloat(map["restaurant_delivery_charge"]    ?? "2.99"),

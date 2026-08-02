@@ -8,6 +8,7 @@ export type SiteConfig = {
   est: number;
   address: string;
   phone: string;
+  whatsapp: string;
   email: string;
   minOrder: number;
   deliveryCharge: number;
@@ -35,6 +36,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   est: 2000,
   address: "15 Castle Street, Sheffield, S3 8LT",
   phone: "0114 453 7431",
+  whatsapp: "",
   email: "hello@abhiruchi.co.uk",
   minOrder: 15,
   deliveryCharge: 2.99,

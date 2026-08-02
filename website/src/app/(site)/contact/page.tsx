@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowIcon, PinIcon, PhoneIcon, MailIcon, ClockIcon } from "@/components/ui/Icons";
+import { ArrowIcon, PinIcon, PhoneIcon, WhatsAppIcon, MailIcon, ClockIcon } from "@/components/ui/Icons";
 import { useConfig } from "@/context/ConfigContext";
 
 type Subject = "Reservation" | "Catering enquiry" | "Feedback" | "General question";
@@ -87,6 +87,11 @@ export default function ContactPage() {
   const infoCards = [
     { icon: <PinIcon />, label: "Visit", value: config.address, sub: config.contactAddressNote },
     { icon: <PhoneIcon />, label: "Call", value: config.phone, sub: config.contactPhoneNote },
+    ...(config.whatsapp
+      ? [{ icon: <WhatsAppIcon />, label: "WhatsApp", value: config.whatsapp,
+           sub: "Tap to message us on WhatsApp",
+           href: `https://wa.me/${config.whatsapp.replace(/\D/g, "").replace(/^0/, "44")}` }]
+      : []),
     { icon: <MailIcon />, label: "Email", value: config.email, sub: config.contactEmailNote },
     { icon: <ClockIcon />, label: "Hours", value: null, sub: null, hours: true },
   ];
@@ -113,8 +118,14 @@ export default function ContactPage() {
         <div className="container grid-contact">
           {/* Info cards */}
           <div style={{ display: "grid", gap: 16 }}>
-            {infoCards.map((c) => (
-              <div key={c.label} className="card card-hover" style={{ padding: 26, display: "flex", gap: 18 }}>
+            {infoCards.map((c) => {
+              // Cards carrying a href (WhatsApp) become links; the rest stay plain
+              const Tag = c.href ? "a" : "div";
+              const linkProps = c.href
+                ? { href: c.href, target: "_blank", rel: "noopener noreferrer", style: { textDecoration: "none", color: "inherit" } }
+                : {};
+              return (
+              <Tag key={c.label} {...linkProps} className="card card-hover" style={{ padding: 26, display: "flex", gap: 18, ...(linkProps.style ?? {}) }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, var(--orange-500), var(--orange-600))", display: "flex", alignItems: "center", justifyContent: "center", color: "white", flexShrink: 0 }}>
                   {c.icon}
                 </div>
@@ -133,8 +144,9 @@ export default function ContactPage() {
                     </div>
                   )}
                 </div>
-              </div>
-            ))}
+              </Tag>
+              );
+            })}
           </div>
 
           {/* Map + form */}
