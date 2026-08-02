@@ -29,7 +29,7 @@ const DEFAULT_CONTENT: ContentMap = {
   usp_1_icon: "🌶️", usp_1_label: "Hand-ground masalas", usp_1_sub: "Roasted & blended daily",
   usp_2_icon: "🔥",  usp_2_label: "Tandoor-fired",        usp_2_sub: "Charcoal-only, 480°C",
   usp_3_icon: "🌾",  usp_3_label: "Aged basmati",         usp_3_sub: "1121 long-grain only",
-  usp_4_icon: "👨‍🍳", usp_4_label: "Chef Ravi's recipes",  usp_4_sub: "From his Hyderabad home",
+  usp_4_icon: "🫓", usp_4_label: "Batter fermented daily", usp_4_sub: "For dosa, idly & vada",
   cta_headline: "Tonight's biryani is calling.",
 };
 
