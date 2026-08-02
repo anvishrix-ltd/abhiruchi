@@ -20,6 +20,12 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(await file.arrayBuffer());
     let imageUrl: string;
 
+    // The stored path is deterministic, so replacing a photo reuses the same URL.
+    // Blob serves it with max-age=2592000, so browsers and the CDN would keep
+    // showing the old picture for 30 days. A version stamp makes each upload a
+    // distinct URL while still overwriting the single underlying file.
+    const version = Date.now();
+
     if (hasBlob) {
       // Production / Vercel: persist to Blob storage (survives deploys, served over CDN)
       const blob = await put(`menu-images/${id}.${ext}`, buffer, {
@@ -28,7 +34,7 @@ export async function POST(req: Request) {
         addRandomSuffix: false,
         allowOverwrite: true,
       });
-      imageUrl = blob.url;
+      imageUrl = `${blob.url}?v=${version}`;
     } else {
       // Local dev fallback: write into the admin app's own public folder
       const { writeFile, mkdir } = await import("fs/promises");
@@ -36,7 +42,7 @@ export async function POST(req: Request) {
       const dir = path.join(process.cwd(), "public", "menu-images");
       await mkdir(dir, { recursive: true });
       await writeFile(path.join(dir, `${id}.${ext}`), buffer);
-      imageUrl = `/menu-images/${id}.${ext}`;
+      imageUrl = `/menu-images/${id}.${ext}?v=${version}`;
     }
 
     await prisma.menuItem.update({ where: { id }, data: { image: imageUrl } });
@@ -58,7 +64,8 @@ export async function DELETE(req: Request) {
     // Best-effort cleanup of the stored file
     if (item?.image) {
       if (hasBlob && item.image.startsWith("http")) {
-        await del(item.image).catch(() => {});
+        // Strip the ?v= stamp — del() matches on the blob's own URL
+        await del(item.image.split("?")[0]).catch(() => {});
       } else {
         const { unlink } = await import("fs/promises");
         const path = await import("path");

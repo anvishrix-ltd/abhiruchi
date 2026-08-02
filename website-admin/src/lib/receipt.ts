@@ -164,7 +164,10 @@ export function printHtml(html: string): Promise<void> {
     iframe.setAttribute("aria-hidden", "true");
     iframe.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden";
 
+    let printed = false;
     iframe.onload = () => {
+      if (printed) return;   // srcdoc fires once, but never print twice
+      printed = true;
       try {
         iframe.contentWindow?.focus();
         iframe.contentWindow?.print();
@@ -174,12 +177,11 @@ export function printHtml(html: string): Promise<void> {
       resolve();
     };
 
+    // srcdoc set before insertion, so the single load event carries the receipt.
+    // Appending first and then document.write() races: the empty about:blank
+    // frame fires load on its own and prints a blank page (Safari reliably did).
+    iframe.srcdoc = html;
     document.body.appendChild(iframe);
-    const doc = iframe.contentWindow?.document;
-    if (!doc) { iframe.remove(); resolve(); return; }
-    doc.open();
-    doc.write(html);
-    doc.close();
   });
 }
 

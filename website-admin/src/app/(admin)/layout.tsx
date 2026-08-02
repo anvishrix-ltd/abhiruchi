@@ -4,6 +4,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
+// "View Site" target. Overridable per environment; defaults to the live site so
+// a deploy never points staff at a dev server that isn't running.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://abhiruchi.co.uk";
+
 const NAV = [
   { href: "/dashboard",     label: "Dashboard",    icon: "📊" },
   { href: "/pos",           label: "POS / Till",   icon: "🛒" },
@@ -138,7 +142,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             {isSettings ? (
               <a
-                href="http://localhost:3000"
+                href={SITE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="a-filter-btn"
