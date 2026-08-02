@@ -7,6 +7,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { ToastHost } from "@/components/ui/Toast";
 import { CookieBanner } from "@/components/ui/CookieBanner";
+import { WhatsAppFab } from "@/components/ui/WhatsAppFab";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,6 +21,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           <div className="app-shell" style={{ minHeight: "100vh" }}>{children}</div>
           <Footer />
           <BottomNav />
+          <WhatsAppFab />
           <CookieBanner />
         </CartProvider>
       </UserProvider>
