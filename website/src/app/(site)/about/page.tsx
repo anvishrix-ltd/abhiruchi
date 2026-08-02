@@ -3,7 +3,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AwardIcon, ArrowIcon } from "@/components/ui/Icons";
 
 const timeline = [
-  { year: "2000", title: "Doors open on Ecclesall Road",        desc: "Chef Ravi & Lakshmi Reddy arrive from Hyderabad with three suitcases of masalas and a dream." },
+  { year: "2000", title: "Doors open in Sheffield",        desc: "Chef Ravi & Lakshmi Reddy arrive from Hyderabad with three suitcases of masalas and a dream." },
   { year: "2008", title: "Sheffield Star — 'Best Curry House'", desc: "First Sheffield Star award. We add the second dining room to fit the regulars." },
   { year: "2014", title: "Tandoor oven installed",              desc: "A real charcoal tandoor — Sheffield's first South-Indian-style oven — fires up the menu." },
   { year: "2020", title: "Lockdown — and delivery is born",     desc: "We learn to box biryani like a love letter. 20,000 deliveries later, here we are." },
@@ -22,7 +22,7 @@ export default function AboutPage() {
               The Reddy family kitchen — <span className="gradient-text">now your local.</span>
             </h1>
             <p className="text-muted" style={{ fontSize: 18, lineHeight: 1.7 }}>
-              <i>Abhiruchi</i> means <i>&ldquo;good taste&rdquo;</i> in Telugu. For us it also means good company, good time, and a recipe book that&apos;s older than most of Ecclesall Road.
+              <i>Abhiruchi</i> means <i>&ldquo;good taste&rdquo;</i> in Telugu. For us it also means good company, good time, and a recipe book that&apos;s older than most of Castle Street.
             </p>
           </div>
           <div style={{ position: "relative", minHeight: 400 }}>
@@ -58,7 +58,7 @@ export default function AboutPage() {
       {/* Timeline */}
       <section className="section" style={{ background: "linear-gradient(135deg, rgba(234, 88, 12, 0.06), transparent)", borderTop: "1px solid rgba(253, 186, 116, 0.08)", borderBottom: "1px solid rgba(253, 186, 116, 0.08)" }}>
         <div className="container">
-          <SectionHeader eyebrow="Twenty-five years on Ecclesall Road" title="Our story, in five acts." />
+          <SectionHeader eyebrow="Twenty-five years in Sheffield" title="Our story, in five acts." />
           <div style={{ maxWidth: 820, margin: "0 auto", position: "relative" }}>
             <div style={{ position: "absolute", left: 79, top: 12, bottom: 12, width: 2, background: "linear-gradient(to bottom, var(--orange-500), transparent)" }} />
             {timeline.map((t) => (
@@ -80,7 +80,7 @@ export default function AboutPage() {
         <div className="container" style={{ textAlign: "center" }}>
           <h2 style={{ fontSize: "clamp(40px, 5vw, 64px)", marginBottom: 24 }}>Come hungry. Leave family.</h2>
           <p className="text-muted" style={{ fontSize: 18, maxWidth: 560, margin: "0 auto 36px" }}>
-            That&apos;s how we do things on Ecclesall Road. Has been since 2000.
+            That&apos;s how we do things in Sheffield. Has been since 2000.
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/order" className="btn btn-primary btn-lg">Order delivery <ArrowIcon /></Link>

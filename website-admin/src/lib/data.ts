@@ -4,7 +4,7 @@ export const RESTAURANT: RestaurantConfig = {
   name: "Abhiruchi",
   tagline: "Authentic South Indian Cuisine in the Heart of Sheffield",
   est: 2000,
-  address: "142 Ecclesall Road, Sheffield, S11 8JD",
+  address: "15 Castle Street, Sheffield, S3 8LT",
   phone: "+44 114 267 8899",
   email: "hello@abhiruchi.co.uk",
   hours: [

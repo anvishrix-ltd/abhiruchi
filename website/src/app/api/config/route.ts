@@ -16,7 +16,7 @@ export async function GET() {
       name:                 map["restaurant_name"]          ?? "Abhiruchi",
       tagline:              map["restaurant_tagline"]       ?? "Authentic South Indian Cuisine in the Heart of Sheffield",
       est:                  parseInt(map["restaurant_est"]  ?? "2000", 10),
-      address:              map["restaurant_address"]       ?? "142 Ecclesall Road, Sheffield, S11 8JD",
+      address:              map["restaurant_address"]       ?? "15 Castle Street, Sheffield, S3 8LT",
       phone:                map["restaurant_phone"]         ?? "+44 114 267 8899",
       email:                map["restaurant_email"]         ?? "hello@abhiruchi.co.uk",
       minOrder:             parseFloat(map["restaurant_min_order"]          ?? "15"),
@@ -38,7 +38,7 @@ export async function GET() {
       contactEmailNote:   map["contact_email_note"]   ?? "Replies within 4 hours",
       contactPhoneNote:   map["contact_phone_note"]   ?? "Lines open through service hours",
       mapsEmbedUrl:       map["maps_embed_url"]       ?? "",
-      mapsLinkUrl:        map["maps_link_url"]        ?? "https://maps.google.com/?q=142+Ecclesall+Road+Sheffield+S11+8JD",
+      mapsLinkUrl:        map["maps_link_url"]        ?? "https://maps.google.com/?q=15+Castle+Street+Sheffield+S3+8LT",
       contactIntroText:   map["contact_intro_text"]   ?? "Walk-ins welcome. Reservations recommended for Friday and Saturday evenings.",
       giftVoucherPresets: (map["gift_voucher_presets"] ?? "10,20,25,50,100")
         .split(",")

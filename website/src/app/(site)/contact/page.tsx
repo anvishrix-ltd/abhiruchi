@@ -99,7 +99,7 @@ export default function ContactPage() {
     <main>
       <section style={{ padding: "60px 0 32px" }}>
         <div className="container" style={{ textAlign: "center" }}>
-          <span className="pill" style={{ marginBottom: 24 }}><PinIcon /> Visit us on Ecclesall Road</span>
+          <span className="pill" style={{ marginBottom: 24 }}><PinIcon /> Visit us on Castle Street</span>
           <h1 style={{ fontSize: "clamp(48px, 6vw, 80px)", marginBottom: 18 }}>
             <span className="gradient-text">Find us, call us,</span> book a table.
           </h1>

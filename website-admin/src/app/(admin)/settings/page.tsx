@@ -35,7 +35,7 @@ type Form = {
 
 const DEFAULTS: Form = {
   name: "Abhiruchi", tagline: "Authentic South Indian Cuisine in the Heart of Sheffield",
-  address: "142 Ecclesall Road, Sheffield, S11 8JD", phone: "+44 114 267 8899",
+  address: "15 Castle Street, Sheffield, S3 8LT", phone: "+44 114 267 8899",
   email: "hello@abhiruchi.co.uk", minOrder: "15", deliveryCharge: "2.99",
   freeDeliveryThreshold: "35",
   vatNumber: "", vatRate: "0", receiptFooter: "Thank you for your order!",

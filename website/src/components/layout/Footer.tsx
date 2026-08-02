@@ -8,7 +8,7 @@ import { useConfig } from "@/context/ConfigContext";
 type ContentMap = Record<string, string>;
 
 const DEFAULT_FOOTER_CONTENT: ContentMap = {
-  footer_description: "Authentic Hyderabadi and Andhra cuisine, served fresh on Ecclesall Road since 2000.",
+  footer_description: "Authentic Hyderabadi and Andhra cuisine, served fresh in Sheffield since 2000.",
 };
 
 export function Footer() {

@@ -167,7 +167,7 @@ export const ADMIN_ORDERS: AdminOrder[] = [
     payment: "paid",
     time: "10:45 AM",
     date: "Today",
-    address: "88 Ecclesall Rd, Sheffield S11 8JB",
+    address: "15 Castle Street, Sheffield, S3 8LT",
     phone: "+44 7700 900654",
   },
   {

@@ -52,7 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .then(r => r.ok ? r.json() : null)
       .then((s: Record<string, string> | null) => {
         if (!s) return;
-        // Address is "142 Ecclesall Road, Sheffield, S11 8JD" — the town is the
+        // Address is "15 Castle Street, Sheffield, S3 8LT" — the town is the
         // second-to-last comma-separated part.
         const parts = (s.address ?? "").split(",").map(p => p.trim()).filter(Boolean);
         setBrand({

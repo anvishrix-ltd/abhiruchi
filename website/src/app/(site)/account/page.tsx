@@ -652,7 +652,7 @@ export default function AccountPage() {
                     </div>
                     <div className="field" style={{ maxWidth: 140 }}>
                       <label className="field-label">Postcode</label>
-                      <input className="field-input" value={billingPostcode} onChange={e => setBillingPostcode(e.target.value.toUpperCase())} placeholder="S11 8JD" />
+                      <input className="field-input" value={billingPostcode} onChange={e => setBillingPostcode(e.target.value.toUpperCase())} placeholder="S3 8LT" />
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 10 }}>
