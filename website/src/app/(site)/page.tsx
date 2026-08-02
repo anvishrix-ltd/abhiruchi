@@ -26,10 +26,10 @@ const DEFAULT_CONTENT: ContentMap = {
   story_headline: "A family recipe, twenty-five years in Sheffield.",
   story_paragraph_1: "Founded in 2000 by Chef Ravi Reddy, Abhiruchi (the Telugu word for good taste) brings the bold, layered flavours of Hyderabad and Andhra Pradesh to Sheffield's most-loved high street.",
   story_paragraph_2: "Our dum biryani is slow-cooked under sealed dough. Our curries are ground fresh each morning. Our masalas are flown in from family suppliers in Telangana. Nothing shortcut. Everything from scratch.",
-  usp_1_icon: "🌶️", usp_1_label: "Hand-ground masalas", usp_1_sub: "Roasted & blended daily",
-  usp_2_icon: "🔥",  usp_2_label: "Tandoor-fired",        usp_2_sub: "Charcoal-only, 480°C",
-  usp_3_icon: "🌾",  usp_3_label: "Aged basmati",         usp_3_sub: "1121 long-grain only",
-  usp_4_icon: "🫓", usp_4_label: "Batter fermented daily", usp_4_sub: "For dosa, idly & vada",
+  usp_1_icon: "/usp/masala.jpg", usp_1_label: "Hand-ground masalas", usp_1_sub: "Roasted & blended daily",
+  usp_2_icon: "/usp/tandoor.jpg",  usp_2_label: "Tandoor-fired",        usp_2_sub: "Charcoal-only, 480°C",
+  usp_3_icon: "/usp/basmati.jpg",  usp_3_label: "Aged basmati",         usp_3_sub: "1121 long-grain only",
+  usp_4_icon: "/usp/batter.jpg", usp_4_label: "Batter fermented daily", usp_4_sub: "For dosa, idly & vada",
   cta_headline: "Tonight's biryani is calling.",
 };
 
@@ -111,7 +111,11 @@ export default function HomePage() {
             {hero ? (
               <div className="card" style={{ padding: 28, gridRow: "span 2", position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 480 }}>
                 <span className="badge badge-hot" style={{ position: "absolute", top: 24, right: 24 }}>🔥 Hot &amp; Fresh</span>
-                <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 120 }}>{hero.emoji}</div>
+                <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 120, minHeight: 0 }}>
+                  {hero.image
+                    ? <img src={hero.image} alt={hero.name} style={{ width: "100%", height: "100%", maxHeight: 260, objectFit: "cover", borderRadius: 16 }} />
+                    : hero.emoji}
+                </div>
                 <div style={{ textAlign: "center" }}>
                   <h3 style={{ fontSize: 26, marginBottom: 8 }}>{hero.name}</h3>
                   <div className="text-yellow" style={{ fontSize: 28, fontFamily: "var(--display)", fontWeight: 700 }}>£{hero.price.toFixed(2)}</div>
@@ -131,7 +135,11 @@ export default function HomePage() {
 
             {sideCards.map((m) => (
               <div key={m.id} className="card card-hover" style={{ padding: 24, textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 232, cursor: "pointer" }} onClick={() => cart.add(m)}>
-                <div style={{ fontSize: 64 }}>{m.emoji}</div>
+                <div style={{ fontSize: 64, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 0, flex: 1 }}>
+                  {m.image
+                    ? <img src={m.image} alt={m.name} loading="lazy" style={{ width: "100%", height: "100%", maxHeight: 120, objectFit: "cover", borderRadius: 12 }} />
+                    : m.emoji}
+                </div>
                 <div>
                   <h4 style={{ fontSize: 17, marginBottom: 4 }}>{m.name}</h4>
                   <div className="text-yellow" style={{ fontWeight: 700, fontFamily: "var(--display)", fontSize: 22 }}>£{m.price.toFixed(2)}</div>
@@ -178,7 +186,12 @@ export default function HomePage() {
           <div className="grid-usps">
             {usps.map((c) => (
               <div key={c.label} className="card" style={{ padding: 26 }}>
-                <div style={{ fontSize: 36, marginBottom: 12 }}>{c.icon}</div>
+                {/* icon is either an emoji or a path/URL to a photo */}
+                {/^(https?:)?\//.test(c.icon ?? "") ? (
+                  <img src={c.icon} alt="" loading="lazy" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 12, marginBottom: 12, display: "block" }} />
+                ) : (
+                  <div style={{ fontSize: 36, marginBottom: 12 }}>{c.icon}</div>
+                )}
                 <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{c.label}</div>
                 <div className="text-muted" style={{ fontSize: 13 }}>{c.sub}</div>
               </div>
