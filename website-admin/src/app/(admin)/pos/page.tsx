@@ -6,7 +6,7 @@ import { printReceipt, prefetchRestaurantDetails, type ReceiptData } from "@/lib
 
 type OrderType = "dine-in" | "takeaway" | "delivery";
 type PayMethod = "cash" | "card";
-type CartLine = { id: string; name: string; emoji: string; price: number; qty: number };
+type CartLine = { id: string; name: string; emoji: string; price: number; qty: number; image?: string | null };
 
 
 export default function PosPage() {
@@ -54,7 +54,7 @@ export default function PosPage() {
     setCart(prev => {
       const ex = prev.find(l => l.id === i.id);
       if (ex) return prev.map(l => l.id === i.id ? { ...l, qty: l.qty + 1 } : l);
-      return [...prev, { id: i.id, name: i.name, emoji: i.emoji, price: i.price, qty: 1 }];
+      return [...prev, { id: i.id, name: i.name, emoji: i.emoji, price: i.price, qty: 1, image: i.image ?? null }];
     });
   };
   const setQty = (id: string, qty: number) =>
@@ -143,7 +143,16 @@ export default function PosPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
             {filtered.map(i => (
               <button key={i.id} onClick={() => add(i)} className="a-card" style={{ padding: 14, textAlign: "left", cursor: "pointer", border: "1px solid var(--a-border)", transition: "transform 120ms" }}>
-                <div style={{ fontSize: 30, marginBottom: 8 }}>{i.emoji}</div>
+                {i.image ? (
+                  <img
+                    src={i.image}
+                    alt={i.name}
+                    loading="lazy"
+                    style={{ width: "100%", height: 84, objectFit: "cover", borderRadius: 10, marginBottom: 8, display: "block", background: "var(--a-border)" }}
+                  />
+                ) : (
+                  <div style={{ height: 84, marginBottom: 8, borderRadius: 10, background: "var(--a-border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34 }}>{i.emoji}</div>
+                )}
                 <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 4, lineHeight: 1.3 }}>{i.name}</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontWeight: 800, color: "var(--a-orange-l)", fontSize: 15 }}>£{Number(i.price ?? 0).toFixed(2)}</span>
@@ -168,7 +177,9 @@ export default function PosPage() {
             <div style={{ padding: "40px 0", textAlign: "center", color: "var(--a-muted)", fontSize: 13 }}>Cart is empty — tap items to add.</div>
           ) : cart.map(l => (
             <div key={l.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: "1px solid var(--a-border)" }}>
-              <span style={{ fontSize: 20 }}>{l.emoji}</span>
+              {l.image
+                ? <img src={l.image} alt="" style={{ width: 32, height: 32, objectFit: "cover", borderRadius: 6, flexShrink: 0 }} />
+                : <span style={{ fontSize: 20, width: 32, textAlign: "center", flexShrink: 0 }}>{l.emoji}</span>}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.name}</div>
                 <div style={{ fontSize: 12, color: "var(--a-orange-l)", fontWeight: 700 }}>£{(l.price * l.qty).toFixed(2)}</div>
