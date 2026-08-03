@@ -27,7 +27,7 @@ export function Footer() {
       <div className="container grid-footer">
         <div>
           <div className="brand" style={{ marginBottom: 18 }}>
-            <div className="brand-logo">🍛</div>
+            <div className="brand-logo"><img src="/logo.jpg" alt="" width={56} height={56} /></div>
             <div>
               <div className="brand-name">{config.name}</div>
               <div className="brand-sub">Sheffield · Est. {config.est}</div>

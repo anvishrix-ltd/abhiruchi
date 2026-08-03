@@ -66,7 +66,7 @@ export function Header() {
       <div className={"mobile-menu" + (mobileOpen ? " open" : "")}>
         <div className="mobile-menu-header">
           <Link href="/" className="brand" style={{ textDecoration: "none" }} onClick={() => setMobileOpen(false)}>
-            <div className="brand-logo">🍛</div>
+            <div className="brand-logo"><img src="/logo.jpg" alt="" width={56} height={56} /></div>
             <div>
               <div className="brand-name">{config.name}</div>
             </div>
@@ -89,7 +89,7 @@ export function Header() {
 
       <div className="container nav-row">
         <Link href="/" className="brand" style={{ textDecoration: "none" }}>
-          <div className="brand-logo">🍛</div>
+          <div className="brand-logo"><img src="/logo.jpg" alt="" width={56} height={56} /></div>
           <div>
             <div className="brand-name">{config.name}</div>
             <div className="brand-sub">Sheffield · Est. {config.est}</div>
